@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BMI Health Care</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#2196f3;--blue2:#e8f5ff;--green:#35b96b;--green2:#eafaf0;
+  --dark:#183b36;--text:#58716c;--white:#fff;--danger:#d9534f
+}
+html{scroll-behavior:smooth}
+body{font-family:"Trebuchet MS","Noto Sans Thai",Arial,sans-serif;background:#f5fbfa;color:var(--dark)}
+button,input,select{font:inherit}
+.nav{height:72px;background:#fff;display:flex;align-items:center;justify-content:space-between;
+padding:0 7%;box-shadow:0 3px 20px #176b5014;position:sticky;top:0;z-index:10}
+.logo{font-size:23px;font-weight:700;color:var(--green)} .logo span{color:var(--blue)}
+.nav button{border:0;background:none;color:var(--text);cursor:pointer;padding:9px 17px;border-radius:25px}
+.nav button.active,.nav button:hover{color:#fff;background:linear-gradient(135deg,var(--green),var(--blue))}
+.page{display:none}.page.active{display:block}
+.hero{min-height:620px;display:flex;align-items:center;justify-content:center;gap:70px;padding:65px 8%;
+background:radial-gradient(circle at 10% 20%,#35b96b20,transparent 30%),radial-gradient(circle at 90% 30%,#2196f320,transparent 30%)}
+.heroText{max-width:560px}.badge{display:inline-block;background:var(--green2);color:#16834a;padding:7px 16px;border-radius:30px;font-size:13px;margin-bottom:18px}
+h1{font-size:clamp(42px,6vw,68px);line-height:1.08;margin-bottom:20px}.hero h1 span{color:var(--green)}
+.heroText p{font-size:18px;line-height:1.8;color:var(--text)}
+.icons{display:flex;gap:14px;margin-top:28px}.icons span{width:55px;height:55px;background:#fff;border-radius:50%;display:grid;place-items:center;font-size:26px;box-shadow:0 10px 25px #176b5018}
+.card{width:420px;background:#fff;padding:35px;border-radius:30px;box-shadow:0 25px 60px #176b5020}
+.cardIcon{width:60px;height:60px;background:var(--green2);border-radius:18px;display:grid;place-items:center;font-size:29px;margin-bottom:16px}
+.card h2{font-size:29px}.sub{color:#8b9d99;margin:5px 0 23px}.group{margin-bottom:18px}
+.group label{display:block;margin-bottom:7px;font-weight:600}.input{display:flex;align-items:center;border:2px solid #e5efec;border-radius:14px;padding:0 14px}
+.input:focus-within{border-color:var(--green)}.input input,.input select{width:100%;border:0;outline:0;padding:14px 5px;font-size:17px;background:transparent;color:var(--dark)}
+.input span{color:#8b9d99;white-space:nowrap}
+.calc{width:100%;border:0;padding:15px;border-radius:14px;color:#fff;font-size:17px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,var(--green),var(--blue));transition:.25s}
+.calc:hover{transform:translateY(-3px);box-shadow:0 10px 25px #2196f340}
+.result{display:none;margin-top:18px}.result.show{display:block;padding:18px;background:var(--green2);border-radius:18px}
+.num{font-size:40px;font-weight:700;color:var(--green)}.status{font-size:18px;color:#16834a}.note{font-size:13px;color:var(--text);line-height:1.6;margin-top:5px}
+.goalBox{display:none;margin-top:18px;padding:20px;border:1px solid #e1efeb;border-radius:20px;background:#fbfefd}
+.goalBox.show{display:block}.goalBox h3{margin-bottom:8px}.goalBox p{color:var(--text);font-size:14px;line-height:1.6;margin-bottom:14px}
+.goalGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.goalBtn{border:2px solid #e4efec;background:#fff;color:var(--dark);padding:12px;border-radius:14px;cursor:pointer;text-align:left}
+.goalBtn:hover,.goalBtn.selected{border-color:var(--green);background:var(--green2)}
+.info{padding:70px 8%;background:#fff;text-align:center}.info h2,.section h2{font-size:32px}
+.intro{max-width:680px;margin:12px auto 38px;color:var(--text);line-height:1.8}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1050px;margin:auto}
+.infoCard{padding:30px 22px;background:#f7fcfb;border:1px solid #e7f2ef;border-radius:24px}.infoCard .emoji{font-size:43px;margin-bottom:12px}
+.infoCard p{color:var(--text);line-height:1.7;margin-top:8px}
+.guide{background:linear-gradient(135deg,#e9fbf2,#edf8ff);padding:70px 8%;text-align:center}.guide h1{font-size:48px}
+.section{max-width:1080px;margin:auto;padding:60px 20px 0}.table{overflow:hidden;border-radius:20px;background:#fff;box-shadow:0 10px 30px #176b5010;margin-top:22px}
+.row{display:grid;grid-template-columns:1fr 1fr;padding:17px 23px;border-bottom:1px solid #edf2f1}.row.head{background:linear-gradient(135deg,var(--green),var(--blue));color:#fff;font-weight:700}.row:last-child{border:0}
+.cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:22px}
+.guideCard{background:#fff;padding:27px;border-radius:24px;box-shadow:0 10px 30px #176b5010;border-top:5px solid var(--green);text-align:left}
+.guideCard.blue{border-color:var(--blue)}.guideCard h3{margin:10px 0}.guideCard p,.guideCard li{color:var(--text);line-height:1.7}.guideCard ul{list-style:none;margin-top:14px}.guideCard li{margin:6px 0}
+.meals{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:22px}.meal{background:#fff;padding:23px;border-radius:20px;box-shadow:0 10px 28px #176b5010}.meal .emoji{font-size:36px}
+.meal strong{display:block;color:var(--green);margin:8px 0}.meal p{font-size:14px;color:var(--text);line-height:1.6}
+.caloriePanel{background:#fff;padding:28px;border-radius:24px;box-shadow:0 10px 30px #176b5010;margin-top:22px}
+.calorieGrid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.calorieValue{font-size:44px;font-weight:800;color:var(--green)}
+.exerciseSection{max-width:1080px;margin:45px auto;padding:0 20px}.exerciseSection h2{text-align:center;font-size:32px}.exerciseSection>p{text-align:center;color:var(--text);line-height:1.7;margin:10px auto 24px;max-width:760px}
+.exerciseGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}.exerciseCard{background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 10px 30px #176b5010}
+.exerciseArt{background:linear-gradient(135deg,#e9fbf2,#edf8ff);padding:18px;height:240px;display:grid;place-items:center}.exerciseArt svg{width:100%;height:100%;max-width:320px}
+.exerciseBody{padding:22px}.exerciseBody h3{margin-bottom:7px}.exerciseBody p{color:var(--text);line-height:1.7}.tip{margin-top:10px;padding:10px 12px;background:var(--green2);border-radius:12px;color:#16834a!important;font-size:14px}
+.disclaimer{max-width:900px;margin:30px auto;padding:16px 20px;border-radius:16px;background:#fff8e7;color:#6b5a2d;line-height:1.7;font-size:14px}
+.back{display:block;width:max-content;margin:45px auto;padding:12px 22px;background:linear-gradient(135deg,var(--green),var(--blue));color:#fff;border-radius:25px;text-decoration:none;border:0;cursor:pointer}
+
+.exerciseSource{max-width:1080px;margin:0 auto 28px;padding:0 20px}
+.exerciseSourceBox{background:#fff;border:1px solid #e7f2ef;border-radius:22px;padding:20px;box-shadow:0 10px 30px #176b5010}
+.exerciseSourceBox h3{margin-bottom:7px}
+.exerciseSourceBox p{color:var(--text);line-height:1.7;font-size:14px}
+.exerciseGrid{grid-template-columns:repeat(2,1fr)}
+.exerciseCard{background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 10px 30px #176b5010;border:1px solid #e7f2ef}
+.exerciseArt{background:#f7fbfa;padding:10px;height:250px;display:grid;place-items:center}
+.exerciseArt img{width:100%;height:100%;object-fit:contain;border-radius:15px}
+.exerciseBody{padding:22px}
+.exerciseBody h3{margin-bottom:10px}
+.exerciseBody p{color:var(--text);line-height:1.7}
+.weightTag{display:inline-block;margin:5px 5px 8px 0;padding:6px 10px;border-radius:999px;background:var(--blue2);color:#1769a8;font-size:13px;font-weight:700}
+.muscleTag{display:inline-block;padding:6px 10px;border-radius:999px;background:var(--green2);color:#16834a;font-size:13px;font-weight:700}
+.formSteps{margin:12px 0 0;padding-left:20px;color:var(--text);line-height:1.75}
+.formSteps li{margin:4px 0}
+.exerciseMeta{display:flex;gap:8px;flex-wrap:wrap;margin:5px 0 10px}
+.trainingNote{max-width:1080px;margin:25px auto;padding:18px 22px;background:#edf8ff;border-radius:18px;color:#315f77;line-height:1.7}
+
+.muscleGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.muscleBtn{border:2px solid #e4efec;background:#fff;color:var(--dark);padding:12px 10px;border-radius:14px;cursor:pointer;text-align:left;transition:.2s}
+.muscleBtn:hover,.muscleBtn.selected{border-color:var(--blue);background:var(--blue2)}
+.comparisonGrid{display:grid;grid-template-columns:1fr;gap:28px;margin-top:25px}
+.compareBlock{background:#fff;border-radius:26px;box-shadow:0 12px 35px #176b5012;overflow:hidden;border:1px solid #e7f2ef}
+.compareHeader{padding:22px 25px;background:linear-gradient(135deg,#eafaf0,#edf8ff);display:flex;justify-content:space-between;gap:15px;align-items:center}
+.compareHeader h3{font-size:24px}.compareHeader p{color:var(--text);margin-top:5px}
+.compareTag{padding:7px 12px;border-radius:20px;background:#fff;font-size:13px;color:#16834a;white-space:nowrap}
+.compareColumns{display:grid;grid-template-columns:1fr 1fr}
+.exerciseOption{padding:24px;border-top:1px solid #edf2f1}
+.exerciseOption+.exerciseOption{border-left:1px solid #edf2f1}
+.optionTitle{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.optionTitle h4{font-size:20px}.equipmentTag{font-size:12px;padding:5px 9px;border-radius:15px;background:#f2f7f6;color:var(--text)}
+.exerciseVisual{display:flex;flex-direction:column;gap:6px;align-items:stretch;background:#fff;border-radius:16px;overflow:hidden}.exerciseImage{width:100%;height:220px;object-fit:contain;background:#f7fbfa;padding:10px;display:block}.imageCredit{font-size:10px;line-height:1.35;color:#71808a;padding:0 10px 8px;text-align:center}.exerciseImage{height:245px;border-radius:18px;overflow:hidden;background:#eef7f5;margin-bottom:15px;display:grid;place-items:center}
+.exerciseImage img{width:100%;height:100%;object-fit:cover}
+.formIllustration{width:100%;height:100%;display:grid;place-items:center;background:linear-gradient(135deg,#eefaf4,#eef7ff)}
+.formIllustration svg{width:90%;height:90%;max-width:360px}
+.metaGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.meta{padding:11px;border-radius:13px;background:#f7fcfb}.meta strong{display:block;color:var(--green);font-size:13px;margin-bottom:3px}.meta span{font-size:14px;color:var(--text)}
+.formSteps{margin:13px 0 0 19px}.formSteps li{color:var(--text);line-height:1.7;margin:5px 0}
+.compareVerdict{margin:18px 24px 24px;padding:15px 17px;background:#f8fbff;border-radius:15px;color:var(--text);line-height:1.7}
+.compareVerdict b{color:var(--dark)}
+.weightNote{font-size:13px;color:var(--text);line-height:1.6;margin-top:10px}
+.emptyPlan{padding:28px;border-radius:20px;background:#fff;text-align:center;color:var(--text);box-shadow:0 10px 30px #176b5010}
+.planBadge{display:inline-block;background:#fff;padding:7px 12px;border-radius:18px;color:#16834a;font-size:13px}
+
+@media(max-width:900px){.exerciseGrid{grid-template-columns:1fr}}
+
+.hidden{display:none!important} footer{text-align:center;padding:23px;background:var(--dark);color:#dcece8;font-size:14px}
+.error{color:var(--danger);font-size:14px;margin-top:10px}.small{font-size:13px;color:var(--text);line-height:1.6}
+@media(max-width:900px){.hero{flex-direction:column;text-align:center}.card{width:min(100%,480px)}.icons{justify-content:center}.grid3,.cards3,.exerciseGrid{grid-template-columns:1fr}.meals{grid-template-columns:repeat(2,1fr)}.calorieGrid{grid-template-columns:1fr}}
+@media(max-width:600px){.nav{padding:0 4%}.logo{font-size:19px}.nav button{padding:8px 9px}.hero{padding:45px 5%}.card{padding:25px}.guide h1{font-size:38px}.meals,.goalGrid{grid-template-columns:1fr}}
+
+/* Real exercise reference images */
+.exerciseImagePair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-items:stretch}
+.exerciseImagePair:has(.exerciseFrame:only-child){grid-template-columns:1fr}
+.exerciseFrame{margin:0;background:#fff;border:1px solid #e6eeee;border-radius:14px;overflow:hidden;display:flex;flex-direction:column;justify-content:center}
+.exerciseFrame .exerciseImage{width:100%;height:300px;object-fit:contain;display:block;background:#f8fbfb}
+.exerciseFrame figcaption{font-size:12px;color:#526666;text-align:center;padding:7px 6px;background:#fff}
+.phaseHint{font-size:12px;color:#557070;text-align:center;margin-top:8px}
+.phaseHint span{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;border-radius:999px;background:#e8f6f1;color:#15705b;font-weight:700;margin:0 3px}
+.realExerciseVisual .imageCredit{margin-top:7px}
+@media(max-width:640px){
+  .exerciseImagePair{gap:7px}
+  .exerciseFrame .exerciseImage{height:220px}
+}
+
+.searchPanel{max-width:1080px;margin:25px auto 0;padding:0 20px}
+.searchBox{background:#fff;border:1px solid #e7f2ef;border-radius:22px;padding:20px;box-shadow:0 10px 30px #176b5010}
+.searchBox h3{margin-bottom:8px}.searchBox p{color:var(--text);font-size:14px;line-height:1.6;margin-bottom:12px}
+.searchInput{display:flex;align-items:center;border:2px solid #e5efec;border-radius:14px;padding:0 14px;background:#fff}
+.searchInput:focus-within{border-color:var(--blue)}
+.searchInput input{width:100%;border:0;outline:0;padding:13px 5px;font-size:16px;color:var(--dark);background:transparent}
+.searchResults{margin-top:12px;display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.searchResult{border:1px solid #e4efec;background:#f9fdfc;border-radius:14px;padding:12px;text-align:left;cursor:pointer}
+.searchResult:hover{border-color:var(--blue);background:var(--blue2)}
+.searchResult strong{display:block;color:var(--dark);margin-bottom:3px}
+.searchResult span{font-size:13px;color:var(--text)}
+.searchEmpty{padding:14px;text-align:center;color:var(--text);background:#f7fcfb;border-radius:14px}
+@media(max-width:640px){.searchResults{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="logo">💚 BMI <span>Health Care</span></div>
+  <div>
+    <button id="homeBtn" class="active" onclick="showPage('home')">หน้าหลัก</button>
+    <button id="guideBtn" onclick="showPage('guide')">คำแนะนำสุขภาพ</button>
+  </div>
+</header>
+
+<div id="home" class="page active">
+<section class="hero">
+  <div class="heroText">
+    <div class="badge">🌿 HEALTHY LIFE</div>
+    <h1>ดูแลสุขภาพ<br><span>เริ่มต้นที่ตัวเรา</span></h1>
+    <p>คำนวณ BMI แล้วเลือกเป้าหมายรูปร่าง เพื่อรับคำแนะนำเรื่องพลังงาน อาหาร และการออกกำลังกายที่เหมาะกับเป้าหมายของคุณ</p>
+    <div class="icons"><span>🥦</span><span>🍎</span><span>💧</span><span>🏃</span><span>❤️</span></div>
+  </div>
+
+  <div class="card">
+    <div class="cardIcon">⚖️</div>
+    <h2>คำนวณค่า BMI</h2>
+    <p class="sub">กรอกข้อมูล แล้วกดคำนวณได้ทันที</p>
+
+    <div class="group">
+      <label for="gender">เพศ</label>
+      <div class="input">
+        <select id="gender">
+          <option value="">เลือกเพศ</option><option value="male">ชาย</option><option value="female">หญิง</option>
+        </select>
+      </div>
+    </div>
+    <div class="group"><label for="age">อายุ</label><div class="input"><input id="age" type="number" min="1" max="120" placeholder="เช่น 20"><span>ปี</span></div></div>
+    <div class="group"><label for="weight">น้ำหนัก</label><div class="input"><input id="weight" type="number" min="1" step="0.1" placeholder="เช่น 60"><span>กก.</span></div></div>
+    <div class="group"><label for="height">ส่วนสูง</label><div class="input"><input id="height" type="number" min="1" step="0.1" placeholder="เช่น 170"><span>ซม.</span></div></div>
+
+    <button class="calc" type="button" onclick="calculateBMI()">คำนวณ BMI 💚</button>
+    <div id="error" class="error"></div>
+
+    <div id="result" class="result">
+      <div>ค่า BMI ของคุณ</div>
+      <div id="bmiValue" class="num">--</div>
+      <div id="bmiStatus" class="status">--</div>
+      <div id="bmiNote" class="note"></div>
+    </div>
+
+    <div id="goalBox" class="goalBox">
+      <h3>🎯 ต่อไปอยากได้หุ่นแบบไหน?</h3>
+      <p>เลือกเป้าหมาย แล้วระบบจะคำนวณพลังงานต่อวันและจัดคำแนะนำให้เหมาะกับเป้าหมาย</p>
+      <div class="goalGrid">
+        <button class="goalBtn" type="button" onclick="selectGoal('lose',this)">🔥 ลดไขมัน / ลดน้ำหนัก</button>
+        <button class="goalBtn" type="button" onclick="selectGoal('maintain',this)">⚖️ รักษาน้ำหนัก / สุขภาพสมดุล</button>
+        <button class="goalBtn" type="button" onclick="selectGoal('muscle',this)">💪 เพิ่มกล้ามเนื้อ</button>
+        <button class="goalBtn" type="button" onclick="selectGoal('tone',this)">✨ กระชับ / ดูเฟิร์ม</button>
+      </div>
+    </div>
+
+    <div id="muscleBox" class="goalBox">
+      <h3>🎯 อยากเน้นกล้ามเนื้อส่วนไหน?</h3>
+      <p>เลือกได้มากกว่า 1 ส่วน ระบบจะหาท่าให้ตรงกับกล้ามเนื้อที่เลือก และจับคู่ <b>Gym</b> กับ <b>เล่นที่บ้าน</b> ให้เห็นความแตกต่างของท่าที่ทำงานกล้ามเนื้อใกล้เคียงกัน</p>
+      <div class="muscleGrid">
+        <button class="muscleBtn" type="button" data-muscle="chest" onclick="toggleMuscle(this)">🫀 อก</button>
+        <button class="muscleBtn" type="button" data-muscle="back" onclick="toggleMuscle(this)">🪽 หลัง / ปีก</button>
+        <button class="muscleBtn" type="button" data-muscle="shoulders" onclick="toggleMuscle(this)">🏹 ไหล่</button>
+        <button class="muscleBtn" type="button" data-muscle="arms" onclick="toggleMuscle(this)">💪 แขน</button>
+        <button class="muscleBtn" type="button" data-muscle="glutes" onclick="toggleMuscle(this)">🍑 ก้น</button>
+        <button class="muscleBtn" type="button" data-muscle="legs" onclick="toggleMuscle(this)">🦵 ขา</button>
+        <button class="muscleBtn" type="button" data-muscle="abs" onclick="toggleMuscle(this)">🔥 หน้าท้อง</button>
+        <button class="muscleBtn" type="button" data-muscle="full" onclick="toggleMuscle(this)">⚡ ทั้งตัว</button>
+      </div>
+      <div class="group" style="margin-top:16px">
+        <label for="experience">ประสบการณ์ฝึกเวท</label>
+        <div class="input">
+          <select id="experience" onchange="renderPersonalPlan()">
+            <option value="beginner">เริ่มต้น / ไม่ค่อยเคยเล่น</option>
+            <option value="regular">ฝึกเป็นประจำ</option>
+            <option value="advanced">มีประสบการณ์สูง</option>
+          </select>
+        </div>
+      </div>
+      <button class="calc" type="button" onclick="createWorkoutPlan()">สร้างโปรแกรมตามเป้าหมาย 🏋️</button>
+    </div>
+  </div>
+</section>
+
+<section class="info">
+  <h2>ทำไมต้องรู้ค่า BMI?</h2>
+  <p class="intro">BMI เป็นตัวชี้วัดเบื้องต้นจากน้ำหนักและส่วนสูง ไม่ได้บอกสัดส่วนไขมันหรือมวลกล้ามเนื้อทั้งหมด จึงควรใช้ร่วมกับข้อมูลสุขภาพอื่น ๆ</p>
+  <div class="grid3">
+    <div class="infoCard"><div class="emoji">📊</div><h3>ประเมินเบื้องต้น</h3><p>ช่วยมองภาพรวมความสัมพันธ์ระหว่างน้ำหนักกับส่วนสูง</p></div>
+    <div class="infoCard"><div class="emoji">🥗</div><h3>วางแผนอาหาร</h3><p>ใช้พลังงานที่คำนวณได้เป็นจุดเริ่มต้นในการวางแผนมื้ออาหาร</p></div>
+    <div class="infoCard"><div class="emoji">🏋️</div><h3>เลือกการออกกำลัง</h3><p>เลือกท่าตามเป้าหมายและเน้นฟอร์มที่ถูกต้องก่อนเพิ่มความหนัก</p></div>
+  </div>
+</section>
+</div>
+
+<div id="guide" class="page">
+<section class="guide">
+  <div class="badge">🌱 PERSONAL HEALTH PLAN</div>
+  <h1 id="guideTitle">คำแนะนำสุขภาพ</h1>
+  <p class="intro" id="guideIntro">ผลลัพธ์จะแสดงตามข้อมูลและเป้าหมายที่เลือก</p>
+</section>
+
+<section class="section">
+  <h2>🔥 พลังงานที่แนะนำต่อวัน</h2>
+  <div class="caloriePanel">
+    <div class="calorieGrid">
+      <div><div class="small">BMR — พลังงานพื้นฐานโดยประมาณ</div><div id="bmrValue" class="calorieValue">-- kcal</div></div>
+      <div><div class="small">เป้าหมายพลังงานต่อวัน (TDEE ปรับตามเป้าหมาย)</div><div id="targetCalories" class="calorieValue">-- kcal</div></div>
+    </div>
+    <div class="group" style="margin-top:20px">
+      <label for="activity">ระดับกิจกรรมในชีวิตประจำวัน</label>
+      <div class="input">
+        <select id="activity" onchange="recalculateCalories()">
+          <option value="1.2">นั่งเป็นส่วนใหญ่ / ออกกำลังน้อยมาก</option>
+          <option value="1.375">ออกกำลังเบา 1–3 วัน/สัปดาห์</option>
+          <option value="1.55" selected>ออกกำลังปานกลาง 3–5 วัน/สัปดาห์</option>
+          <option value="1.725">ออกกำลังหนัก 6–7 วัน/สัปดาห์</option>
+          <option value="1.9">ออกกำลังหนักมาก / งานใช้แรงมาก</option>
+        </select>
+      </div>
+    </div>
+    <p id="calorieNote" class="small"></p>
+  </div>
+</section>
+
+<section class="section">
+  <h2>🥗 แนวทางการกิน</h2>
+  <div class="meals">
+    <div class="meal"><div class="emoji">🍳</div><strong>มื้อเช้า</strong><p>โปรตีน + คาร์โบไฮเดรตไม่ขัดสี + ผักหรือผลไม้ เช่น ไข่ ข้าวโอ๊ต และผลไม้</p></div>
+    <div class="meal"><div class="emoji">🍚</div><strong>มื้อกลางวัน</strong><p>เน้นโปรตีนไม่ติดมัน ผักหลากหลาย และข้าวในปริมาณที่เหมาะกับพลังงานเป้าหมาย</p></div>
+    <div class="meal"><div class="emoji">🥣</div><strong>มื้อเย็น</strong><p>เน้นโปรตีนและผัก ลดอาหารทอดหรือหวานจัด หากต้องการควบคุมพลังงาน</p></div>
+    <div class="meal"><div class="emoji">💧</div><strong>ระหว่างวัน</strong><p>ดื่มน้ำสม่ำเสมอ เลือกของว่างที่มีโปรตีนหรือใยอาหารเมื่อหิว</p></div>
+  </div>
+  <div class="cards3" id="goalTips"></div>
+</section>
+
+
+
+<section class="searchPanel" id="exerciseSearchPanel">
+  <div class="searchBox">
+    <h3>🔎 ค้นหาท่าออกกำลังกาย</h3>
+    <p>พิมพ์ชื่อท่า กล้ามเนื้อ หรืออุปกรณ์ เช่น “อก”, “Squat”, “ดัมเบล”, “Lat Pulldown” แล้วเลือกผลลัพธ์เพื่อดูโปรแกรมที่เกี่ยวข้อง</p>
+    <div class="searchInput">
+      <span>🔍</span>
+      <input id="exerciseSearch" type="search" autocomplete="off" placeholder="ค้นหาท่าออกกำลังกาย / กล้ามเนื้อ / อุปกรณ์..." oninput="searchExercises(this.value)">
+    </div>
+    <div id="searchResults" class="searchResults"></div>
+  </div>
+</section>
+
+<section class="exerciseSection">
+  <h2>🏋️ โปรแกรมเฉพาะเป้าหมาย</h2>
+  <p id="planSummary">เลือกเป้าหมายและกล้ามเนื้อจากด้านบน แล้วกด “สร้างโปรแกรมตามเป้าหมาย”</p><p class="imageStyleNote">🧬 เปลี่ยนภาพประกอบเป็นภาพกายวิภาคแนวเดียวกับตัวอย่างรูปที่ 2 โดยอ้างอิงแหล่งภาพที่มีใบอนุญาตใช้งาน</p>
+  <div id="comparisonGrid" class="comparisonGrid"></div>
+</section>
+
+<div class="trainingNote">
+  <strong>🎚️ เรื่องน้ำหนัก:</strong> ระบบจะแสดง “ช่วงเริ่มต้นคร่าว ๆ” เท่านั้น เพราะน้ำหนักที่เหมาะสมขึ้นกับประสบการณ์
+  เทคนิค และชนิดของเครื่องแต่ละยี่ห้อ ให้เลือกน้ำหนักที่ทำได้ตามจำนวนครั้งเป้าหมายโดยยังเหลือแรงประมาณ 2–3 ครั้ง
+  (ไม่จำเป็นต้องฝืนจนฟอร์มเสีย) เมื่อทำครบช่วงครั้งได้สบายหลายครั้ง ค่อยเพิ่มน้ำหนักเล็กน้อย
+</div>
+
+<div class="exerciseSource">
+  <div class="exerciseSourceBox">
+    <h3>📚 หลักการที่ใช้สร้างคำแนะนำ</h3>
+    <p>
+      ระบบจับคู่ท่าที่เน้นกล้ามเนื้อเดียวกันระหว่าง Gym และ Home โดยใช้ท่าหลักและอุปกรณ์ต่างกัน
+      จำนวนเซต/ครั้งเป็นกรอบ ไม่ใช่สูตรตายตัว และจะปรับตามเป้าหมายและประสบการณ์
+      ส่วนภาพที่ผู้ใช้ส่งมาใช้เป็นตัวอย่างภาพฟอร์มสำหรับท่าดัมเบลบางรายการ
+    </p>
+  </div>
+</div>
+
+<div class="disclaimer">หมายเหตุ: ค่าแคลอรี่เป็นค่าประมาณจากสูตร Mifflin–St Jeor และตัวคูณกิจกรรม ไม่ใช่คำวินิจฉัยทางการแพทย์ ความต้องการพลังงานจริงแตกต่างกันตามองค์ประกอบร่างกาย การนอน กิจกรรม และภาวะสุขภาพ หากมีโรคประจำตัว ตั้งครรภ์ อายุต่ำกว่า 18 ปี หรือมีประวัติความผิดปกติด้านการกิน ควรปรึกษาผู้เชี่ยวชาญก่อนใช้เป้าหมายพลังงานเพื่อควบคุมอาหาร</div>
+<button class="back" type="button" onclick="showPage('home')">← กลับไปคำนวณใหม่</button>
+</div>
+
+<footer>💚 BMI Health Care — ใช้ข้อมูลเพื่อดูแลตัวเองอย่างสมดุล</footer>
+
+<script>
+let userData = null;
+let selectedGoal = null;
+
+function showPage(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(page).classList.add('active');
+  document.getElementById('homeBtn').classList.toggle('active',page==='home');
+  document.getElementById('guideBtn').classList.toggle('active',page==='guide');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function calculateBMI(){
+  const gender=document.getElementById('gender').value;
+  const age=Number(document.getElementById('age').value);
+  const weight=Number(document.getElementById('weight').value);
+  const height=Number(document.getElementById('height').value);
+  const error=document.getElementById('error');
+
+  error.textContent='';
+
+  if(!gender || !age || !weight || !height || age<1 || age>120 || weight<=0 || height<=0){
+    error.textContent='กรุณากรอกเพศ อายุ น้ำหนัก และส่วนสูงให้ครบถ้วนก่อนคำนวณค่ะ';
+    return;
+  }
+
+  const heightM=height/100;
+  const bmi=weight/(heightM*heightM);
+  let status='',note='';
+
+  if(bmi<18.5){
+    status='น้ำหนักน้อยกว่าเกณฑ์'; note='อาจพิจารณาเพิ่มพลังงานและโปรตีนอย่างเหมาะสม โดยดูร่วมกับสุขภาพและองค์ประกอบร่างกาย';
+  }else if(bmi<23){
+    status='อยู่ในช่วงปกติ'; note='สามารถเน้นการรักษาสมดุลของอาหาร การเคลื่อนไหว และการฝึกกล้ามเนื้อ';
+  }else if(bmi<25){
+    status='น้ำหนักเกิน'; note='หากต้องการลดไขมัน ควรสร้างการขาดดุลพลังงานแบบพอดีและฝึกแรงต้านร่วมด้วย';
+  }else if(bmi<30){
+    status='อ้วนระดับ 1'; note='ควรเน้นการปรับพฤติกรรมอย่างค่อยเป็นค่อยไป และติดตามปัจจัยสุขภาพอื่นร่วมด้วย';
+  }else{
+    status='อ้วนระดับ 2 ขึ้นไป'; note='ควรพิจารณาปรึกษาผู้เชี่ยวชาญด้านสุขภาพเพื่อวางแผนที่เหมาะกับแต่ละบุคคล';
+  }
+
+  userData={gender,age,weight,height,bmi};
+  selectedGoal=null;
+  document.getElementById('muscleBox').classList.remove('show');
+  document.querySelectorAll('.muscleBtn').forEach(b=>b.classList.remove('selected'));
+
+  document.getElementById('bmiValue').textContent=bmi.toFixed(1);
+  document.getElementById('bmiStatus').textContent=status;
+  document.getElementById('bmiNote').textContent=note;
+  document.getElementById('result').classList.add('show');
+  document.getElementById('goalBox').classList.add('show');
+  document.querySelectorAll('.goalBtn').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('goalBox').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+
+function selectGoal(goal,button){
+  if(!userData) return;
+  selectedGoal=goal;
+  document.querySelectorAll('.goalBtn').forEach(b=>b.classList.remove('selected'));
+  button.classList.add('selected');
+  document.getElementById('muscleBox').classList.add('show');
+  document.getElementById('guideTitle').textContent='แผนสำหรับ: '+getGoalName();
+  document.getElementById('guideIntro').textContent='BMI '+userData.bmi.toFixed(1)+' • น้ำหนัก '+userData.weight+' กก. • ส่วนสูง '+userData.height+' ซม.';
+  renderGoalTips();
+  updateCalories();
+  document.getElementById('muscleBox').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function toggleMuscle(button){
+  button.classList.toggle('selected');
+  renderPersonalPlan();
+}
+
+function getSelectedMuscles(){
+  return [...document.querySelectorAll('.muscleBtn.selected')].map(b=>b.dataset.muscle);
+}
+
+function getBMR(){
+  if(!userData) return 0;
+  const {gender,age,weight,height}=userData;
+  return gender==='male'
+    ? (10*weight)+(6.25*height)-(5*age)+5
+    : (10*weight)+(6.25*height)-(5*age)-161;
+}
+
+function recalculateCalories(){
+  if(userData && selectedGoal) updateCalories();
+}
+
+function updateCalories(){
+  const bmr=getBMR();
+  const activity=Number(document.getElementById('activity').value);
+  const tdee=bmr*activity;
+  let target=tdee, adjustment='รักษาน้ำหนัก';
+  if(selectedGoal==='lose'){target=tdee-400; adjustment='ลดจาก TDEE ประมาณ 400 kcal/วัน';}
+  else if(selectedGoal==='muscle'){target=tdee+250; adjustment='เพิ่มจาก TDEE ประมาณ 250 kcal/วัน';}
+  else if(selectedGoal==='tone'){target=tdee-200; adjustment='ลดจาก TDEE เล็กน้อย พร้อมเน้นเวทเทรนนิ่ง';}
+  target=Math.max(1200,Math.round(target));
+  document.getElementById('bmrValue').textContent=Math.round(bmr)+' kcal';
+  document.getElementById('targetCalories').textContent=target+' kcal';
+  document.getElementById('calorieNote').textContent='TDEE โดยประมาณ '+Math.round(tdee)+' kcal/วัน • '+adjustment+' • ปรับตามผลจริงของร่างกายทุก 2–4 สัปดาห์';
+}
+
+const userExerciseImages = {
+  bench: [
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Dumbbell-bench-press-1.png",
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Dumbbell-bench-press-2.png"
+  ],
+  row: "https://commons.wikimedia.org/wiki/Special:FilePath/DumbbellBentOverRow.JPG",
+  kickback: [
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Triceps%20kickback%20with%20dumbbell%201.svg",
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Triceps%20kickback%20with%20dumbbell%202.svg"
+  ],
+  curl: [
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Bicep-curl-1.png",
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Bicep-curl-2.png"
+  ],
+  fly: [
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Dumbbell-flys-1.png",
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Dumbbell-flys-2.png"
+  ]
+};
+
+const anatomyImages = {
+  machineChestPress: "https://commons.wikimedia.org/wiki/Special:FilePath/Girl%20doing%20chest%20press%20machine%20exercise.jpg",
+  cableChestFly: [
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Cable-crossover-1.png",
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Cable-crossover-2.png"
+  ],
+  latPulldown: "https://commons.wikimedia.org/wiki/Special:FilePath/Lat%20pulldown%20machine%2020180112.jpg",
+  resistanceBandRow: "https://commons.wikimedia.org/wiki/Special:FilePath/DumbbellBentOverRow.JPG",
+  seatedCableRow: "https://commons.wikimedia.org/wiki/Special:FilePath/DumbbellBentOverRow.JPG",
+  machineShoulderPress: [
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Shoulder-press-machine-1.png",
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Shoulder-press-machine-2.png"
+  ],
+  dumbbellShoulderPress: [
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Dumbbell-shoulder-press-1.png",
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Dumbbell-shoulder-press-2.png"
+  ],
+  cableLateralRaise: "https://commons.wikimedia.org/wiki/Special:FilePath/DumbbellLateralRaise.JPG",
+  dumbbellLateralRaise: [
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Dumbbell-lateral-raises-1.png",
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Dumbbell-lateral-raises-2.png"
+  ],
+  cableBicepsCurl: [
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Biceps-curl-1.png",
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Biceps-curl-2.png"
+  ],
+  cableTricepsPushdown: [
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Triceps-pushdown-with-v-bar-1.gif",
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Triceps-pushdown-with-v-bar-2.gif"
+  ],
+  hipThrustMachine: "https://commons.wikimedia.org/wiki/Special:FilePath/Romanian-deadlift-2.png",
+  dumbbellHipThrust: "https://commons.wikimedia.org/wiki/Special:FilePath/Leg%20press%20machine.jpg",
+  legPress: [
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Leg-press-1-1024x670.png",
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Leg-press-2-1024x670.png"
+  ],
+  gobletSquat: "https://commons.wikimedia.org/wiki/Special:FilePath/Kettlebell%20Front%20Squat%201.jpg",
+  legExtension: [
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Leg-extensions-1-672x1024.png",
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Leg-extensions-2-672x1024.png"
+  ],
+  bodyweightSquat: "https://commons.wikimedia.org/wiki/Special:FilePath/Kettlebell%20Front%20Squat%201.jpg",
+  seatedLegCurl: [
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Seated-leg-curl-1.png",
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Seated-leg-curl-2.png"
+  ],
+  dumbbellRDL: "https://commons.wikimedia.org/wiki/Special:FilePath/Romanian-deadlift-2.png",
+  cableCrunch: "https://commons.wikimedia.org/wiki/Special:FilePath/Seated-ab-crunch-2.gif",
+  plank: "https://commons.wikimedia.org/wiki/Special:FilePath/Plank_exercise.svg",
+  smithSquat: "https://commons.wikimedia.org/wiki/Special:FilePath/Leg-press-1-1024x670.png",
+  pushup: [
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Push-ups-1.png",
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Push-ups-2.png"
+  ]
+};
+
+const exerciseDB = {
+  chest: [
+    {
+      muscle:'อก',
+      gym:{name:'Machine Chest Press',equipment:'เครื่อง Chest Press',image:anatomyImages.machineChestPress,kind:'anatomy',
+        weight:'เริ่มต้น: โหลดเบา–ปานกลางของเครื่อง โดยลอง 8–12 ครั้งแล้วเหลือแรง ~2–3 ครั้ง',
+        form:['ปรับเบาะให้มือจับอยู่ระดับกลางอก','ดึงสะบักลงและหลังแนบพนัก','ดันมือจับไปข้างหน้าโดยไม่ล็อกข้อศอกแรง ๆ','ผ่อนกลับช้า ๆ จนรู้สึกตึงอกโดยไม่ยืดไหล่เกินสบาย']},
+      home:{name:'Dumbbell Bench Press',equipment:'ดัมเบล + ม้านั่ง',image:userExerciseImages.bench,kind:'image',
+        weight:'เริ่มต้นคร่าว ๆ: 2–6 กก./ข้าง (ผู้เริ่มต้น)',
+        form:['เท้าวางมั่นคงและเก็บสะบักเข้าหากันเบา ๆ','ดัมเบลอยู่เหนืออก ข้อมืออยู่เหนือข้อศอก','ลดลงอย่างควบคุมระดับอก','ดันกลับขึ้นโดยไม่ยกไหล่เข้าหาหู']}
+    },
+    {
+      muscle:'อกส่วนบน/กลาง',
+      gym:{name:'Cable Chest Fly',equipment:'Cable Machine',image:anatomyImages.cableChestFly,kind:'anatomy',
+        weight:'เริ่มจากโหลดเบา ให้ควบคุมช่วงกางและหุบได้เต็มที่',
+        form:['ตั้งสายให้อยู่ระดับอก','ยืนมั่นคงและงอศอกเล็กน้อย','โอบมือเข้าหากันโดยไม่กระแทก','คืนแขนช้า ๆ โดยไม่ปล่อยไหล่หลุดตำแหน่ง']},
+      home:{name:'Dumbbell Fly',equipment:'ดัมเบล + ม้านั่ง',image:userExerciseImages.fly,kind:'image',
+        weight:'เริ่มต้นคร่าว ๆ: 1–4 กก./ข้าง',
+        form:['นอนราบ เท้าวางพื้นและดัมเบลอยู่เหนืออก','งอศอกเล็กน้อยตลอดการเคลื่อนไหว','กางแขนเป็นโค้งจนอกตึงพอดี','บีบอกพาดัมเบลกลับเข้าหากันโดยไม่ชนแรง']}
+    }
+  ],
+  back: [
+    {
+      muscle:'หลัง / ปีก',
+      gym:{name:'Lat Pulldown',equipment:'เครื่อง Lat Pulldown',image:anatomyImages.latPulldown,kind:'anatomy',
+        weight:'เริ่มจากโหลดที่ทำ 8–12 ครั้งได้ด้วยฟอร์มดี และเหลือแรง ~2–3 ครั้ง',
+        form:['นั่งให้ต้นขาล็อกกับเบาะ','จับบาร์กว้างกว่าหัวไหล่เล็กน้อย','ดึงบาร์ลงมาทางอกส่วนบนโดยไม่เหวี่ยงตัว','ปล่อยกลับขึ้นช้า ๆ จนแขนเกือบเหยียดเต็ม']},
+      home:{name:'Resistance Band Row',equipment:'ยางยืด / จุดยึดมั่นคง',image:anatomyImages.resistanceBandRow,kind:'anatomy',
+        weight:'เลือกแรงต้านที่ทำ 8–15 ครั้งได้โดยหลังไม่หมุน',
+        form:['ยึดยางให้อยู่ระดับลำตัว','อกเปิดและหลังเป็นกลาง','ดึงศอกไปด้านหลังใกล้ลำตัว','ค่อย ๆ ปล่อยกลับและไม่ปล่อยแรงตึงหาย']}
+    },
+    {
+      muscle:'หลังกลาง',
+      gym:{name:'Seated Cable Row',equipment:'Cable Row',image:anatomyImages.seatedCableRow,kind:'anatomy',
+        weight:'เริ่มจากโหลดเบา–ปานกลางตามเครื่อง ไม่ใช้แรงเหวี่ยง',
+        form:['นั่งหลังตรงและเข่างอเล็กน้อย','จับมือจับโดยไหล่ไม่ยก','ดึงศอกไปด้านหลังพร้อมบีบสะบัก','ปล่อยแขนกลับโดยคุมตลอดทาง']},
+      home:{name:'One-arm Dumbbell Row',equipment:'ดัมเบล + ม้านั่ง',image:userExerciseImages.row,kind:'image',
+        weight:'เริ่มต้นคร่าว ๆ: 4–10 กก./ข้าง',
+        form:['วางมือและเข่าด้านหนึ่งบนม้านั่ง','หลังเป็นกลาง ไม่บิดเอว','ดึงดัมเบลเข้าหาสะโพก','ลดลงช้า ๆ จนแขนเกือบเหยียด']}
+    }
+  ],
+  shoulders: [
+    {
+      muscle:'ไหล่หน้า/กลาง',
+      gym:{name:'Machine Shoulder Press',equipment:'เครื่อง Shoulder Press',image:anatomyImages.machineShoulderPress,kind:'anatomy',
+        weight:'เริ่มจากโหลดที่คุมได้ 8–12 ครั้ง ไม่ฝืนช่วงเหนือศีรษะ',
+        form:['ปรับเบาะให้มือจับอยู่ใกล้ระดับหู','หลังและศีรษะพิงพนัก','ดันขึ้นโดยไม่ยักไหล่','ลดกลับอย่างช้าและควบคุม']},
+      home:{name:'Dumbbell Shoulder Press',equipment:'ดัมเบล + ม้านั่ง',image:anatomyImages.dumbbellShoulderPress,kind:'anatomy',
+        weight:'เริ่มต้นคร่าว ๆ: 2–5 กก./ข้าง',
+        form:['นั่งหลังตรง ดัมเบลระดับไหล่','เกร็งหน้าท้องและไม่แอ่นหลัง','ดันขึ้นในแนวที่สบาย','ลดกลับจนดัมเบลอยู่ระดับไหล่']}
+    },
+    {
+      muscle:'ไหล่กลาง',
+      gym:{name:'Cable Lateral Raise',equipment:'Cable Machine',image:anatomyImages.cableLateralRaise,kind:'anatomy',
+        weight:'ใช้โหลดเบามาก เน้นคุมท่า ไม่เหวี่ยง',
+        form:['ยืนข้างสายและจับมือจับ','ยกแขนออกด้านข้างโดยศอกนำเล็กน้อย','ยกประมาณระดับไหล่หรือต่ำกว่าเล็กน้อย','ลดลงช้า ๆ']},
+      home:{name:'Dumbbell Lateral Raise',equipment:'ดัมเบล',image:anatomyImages.dumbbellLateralRaise,kind:'anatomy',
+        weight:'เริ่มต้นคร่าว ๆ: 1–4 กก./ข้าง',
+        form:['ยืนตัวตรง แขนข้างลำตัว','ยกแขนออกด้านข้างด้วยข้อศอกนำเล็กน้อย','ไม่ยกไหล่เข้าหาหู','ลดลงช้าและไม่ปล่อยดัมเบลตก']}
+    }
+  ],
+  arms: [
+    {
+      muscle:'ไบเซ็ปส์',
+      gym:{name:'Cable Biceps Curl',equipment:'Cable Machine',image:anatomyImages.cableBicepsCurl,kind:'anatomy',
+        weight:'เริ่มจากโหลดเบา–ปานกลางที่ทำ 8–12 ครั้งได้โดยไม่โยกลำตัว',
+        form:['ยืนตัวตรงและเก็บศอกไว้ข้างลำตัว','งอศอกยกมือเข้าหาไหล่','ไม่โยกหลังเพื่อช่วยยก','ลดลงช้า ๆ จนเกือบเหยียดเต็ม']},
+      home:{name:'Dumbbell Biceps Curl',equipment:'ดัมเบล',image:userExerciseImages.curl,kind:'image',
+        weight:'เริ่มต้นคร่าว ๆ: 2–5 กก./ข้าง',
+        form:['ยืนตรงและศอกอยู่ข้างลำตัว','งอศอกยกดัมเบลขึ้นโดยไม่เหวี่ยง','บีบไบเซ็ปส์ด้านบนชั่วครู่','ลดลงช้า ๆ']}
+    },
+    {
+      muscle:'ไตรเซ็ปส์',
+      gym:{name:'Cable Triceps Pushdown',equipment:'Cable Machine',image:anatomyImages.cableTricepsPushdown,kind:'anatomy',
+        weight:'เริ่มจากโหลดที่ทำ 10–15 ครั้งได้โดยศอกไม่ลอย',
+        form:['จับบาร์และดึงศอกแนบลำตัว','ดันลงจนแขนเกือบเหยียดเต็ม','ค้างสั้น ๆ และบีบหลังแขน','ปล่อยกลับช้า ๆ โดยไม่ให้ไหล่เข้ามาช่วย']},
+      home:{name:'Dumbbell Triceps Kickback',equipment:'ดัมเบล + ม้านั่ง',image:userExerciseImages.kickback,kind:'image',
+        weight:'เริ่มต้นคร่าว ๆ: 1–3 กก./ข้าง',
+        form:['โน้มตัวโดยหลังเป็นกลาง','ยกต้นแขนให้ขนานลำตัว','เหยียดศอกไปด้านหลังจนแขนตรง','งอกลับช้า ๆ โดยต้นแขนอยู่นิ่ง']}
+    }
+  ],
+  glutes: [
+    {
+      muscle:'ก้น',
+      gym:{name:'Hip Thrust Machine',equipment:'เครื่อง Hip Thrust',image:anatomyImages.hipThrustMachine,kind:'anatomy',
+        weight:'เริ่มจากโหลดเบาเพื่อเรียนรู้การเกร็งก้นก่อน แล้วค่อยเพิ่ม',
+        form:['วางหลังและสะโพกตามตำแหน่งเครื่อง','เท้าวางประมาณกว้างสะโพก','ดันสะโพกขึ้นพร้อมเกร็งก้น','หยุดเมื่อสะโพกสุดโดยไม่แอ่นหลังมากเกิน']},
+      home:{name:'Dumbbell Hip Thrust',equipment:'ดัมเบล + ม้านั่ง',image:anatomyImages.dumbbellHipThrust,kind:'anatomy',
+        weight:'เริ่มต้นคร่าว ๆ: ดัมเบล 6–12 กก. วางบนสะโพกอย่างปลอดภัย',
+        form:['พิงสะบักกับม้านั่งที่มั่นคง','วางดัมเบลบนสะโพกพร้อมแผ่นรอง','ดันพื้นและยกสะโพกขึ้น','เกร็งก้นด้านบนแล้วลดลงช้า ๆ']}
+    },
+    {
+      muscle:'ก้น / ขา',
+      gym:{name:'Leg Press',equipment:'เครื่อง Leg Press',image:anatomyImages.legPress,kind:'anatomy',
+        weight:'ไม่เทียบ kg ข้ามเครื่อง เพราะน้ำหนักแคร่และองศาแตกต่างกัน; เริ่มจากโหลดต่ำ',
+        form:['วางเท้ากว้างประมาณสะโพกและเข่าตามแนวปลายเท้า','ปลดล็อกตามขั้นตอนของเครื่อง','ย่อตัวโดยไม่ให้หลัง/สะโพกลอยจากพนัก','ดันกลับโดยไม่ล็อกเข่าแรง ๆ']},
+      home:{name:'Goblet Squat',equipment:'ดัมเบล / เคตเทิลเบล',image:anatomyImages.gobletSquat,kind:'anatomy',
+        weight:'เริ่มต้นคร่าว ๆ: 4–10 กก.',
+        form:['ถือดัมเบลชิดอก','นั่งสะโพกลงและเข่าตามแนวปลายเท้า','รักษาหลังเป็นกลาง','ดันพื้นกลับขึ้นพร้อมเกร็งก้น']}
+    }
+  ],
+  legs: [
+    {
+      muscle:'ต้นขาหน้า',
+      gym:{name:'Leg Extension',equipment:'เครื่อง Leg Extension',image:anatomyImages.legExtension,kind:'anatomy',
+        weight:'เริ่มจากโหลดเบา คุมขึ้นและลง ไม่ใช้แรงเหวี่ยง',
+        form:['ปรับแกนหมุนให้ตรงกับข้อเข่า','วางหน้าแข้งตามแผ่นรอง','เหยียดเข่าขึ้นอย่างควบคุม','ลดกลับช้า ๆ โดยไม่กระแทกน้ำหนัก']},
+      home:{name:'Bodyweight / Goblet Squat',equipment:'น้ำหนักตัว / ดัมเบล',image:anatomyImages.bodyweightSquat,kind:'anatomy',
+        weight:'น้ำหนักตัวก่อน; เมื่อ 12–15 ครั้งง่ายค่อยเพิ่ม 4–10 กก.',
+        form:['ยืนเท้ากว้างประมาณสะโพก','ย่อตัวโดยเข่าตามแนวปลายเท้า','อกเปิดและหลังเป็นกลาง','ดันพื้นกลับขึ้น']}
+    },
+    {
+      muscle:'ต้นขาหลัง',
+      gym:{name:'Seated Leg Curl',equipment:'เครื่อง Leg Curl',image:anatomyImages.seatedLegCurl,kind:'anatomy',
+        weight:'เริ่มจากโหลดที่คุมได้ 8–12 ครั้ง',
+        form:['ปรับแกนเครื่องให้ตรงกับข้อเข่า','ล็อกต้นขาตามเครื่อง','งอเข่าดึงแผ่นรองเข้าหาตัว','คืนกลับช้า ๆ จนกล้ามเนื้อตึงพอดี']},
+      home:{name:'Dumbbell Romanian Deadlift',equipment:'ดัมเบล',image:anatomyImages.dumbbellRDL,kind:'anatomy',
+        weight:'เริ่มต้นคร่าว ๆ: 4–10 กก./ข้าง',
+        form:['ยืนตัวตรง ดัมเบลอยู่หน้าต้นขา','ดันสะโพกไปด้านหลังและเข่าอ่อนเล็กน้อย','ลดดัมเบลชิดขาโดยหลังเป็นกลาง','ดันสะโพกกลับมาด้านหน้าและเกร็งก้น']}
+    }
+  ],
+  abs: [
+    {
+      muscle:'หน้าท้อง',
+      gym:{name:'Cable Crunch',equipment:'Cable Machine',image:anatomyImages.cableCrunch,kind:'anatomy',
+        weight:'เริ่มจากโหลดเบา ให้เกร็งหน้าท้องได้โดยไม่ดึงด้วยแขน',
+        form:['คุกเข่าห่างจากเครื่องพอดี','จับเชือกไว้ข้างศีรษะ','ม้วนซี่โครงเข้าหาสะโพกโดยใช้หน้าท้อง','กลับขึ้นช้า ๆ โดยไม่แอ่นหลังเกิน']},
+      home:{name:'Plank',equipment:'น้ำหนักตัว',image:anatomyImages.plank,kind:'anatomy',
+        weight:'น้ำหนักตัว; เพิ่มเวลาหรือความยากเมื่อ 30–60 วินาทีง่าย',
+        form:['วางศอกใต้ไหล่','ลำตัวเป็นแนวตรง','เกร็งหน้าท้องและก้น','หายใจต่อเนื่อง ไม่กลั้นหายใจ']}
+    }
+  ],
+  full: [
+    {
+      muscle:'ทั้งตัว / หลายมัดกล้ามเนื้อ',
+      gym:{name:'Smith Machine Squat',equipment:'Smith Machine',image:anatomyImages.smithSquat,kind:'anatomy',
+        weight:'เริ่มจากบาร์เปล่าหรือโหลดต่ำมากเพื่อเรียนรู้ทางการเคลื่อนไหว',
+        form:['วางบาร์ตามตำแหน่งที่สบายและเท้าตั้งมั่นคง','ย่อตัวโดยเข่าตามแนวปลายเท้า','รักษาแกนลำตัวและหลังเป็นกลาง','ดันพื้นกลับขึ้นโดยคุมเข่าและสะโพก']},
+      home:{name:'Goblet Squat',equipment:'ดัมเบล / เคตเทิลเบล',image:anatomyImages.gobletSquat,kind:'anatomy',
+        weight:'เริ่มต้นคร่าว ๆ: 4–10 กก.',
+        form:['ถือดัมเบลชิดอก','ย่อตัวด้วยการงอสะโพกและเข่า','รักษาหลังเป็นกลาง','ดันพื้นกลับขึ้นพร้อมเกร็งก้น']}
+    },
+    {
+      muscle:'อก / ไหล่ / แขน',
+      gym:{name:'Chest Press Machine',equipment:'เครื่อง Chest Press',image:anatomyImages.machineChestPress,kind:'anatomy',
+        weight:'เริ่มจากโหลดเบา–ปานกลางตามเครื่อง',
+        form:['ปรับเบาะให้มือจับระดับกลางอก','หลังแนบพนักและไหล่ไม่ยก','ดันไปข้างหน้าอย่างควบคุม','คืนกลับช้า ๆ']},
+      home:{name:'Push-up',equipment:'น้ำหนักตัว',image:anatomyImages.pushup,kind:'anatomy',
+        weight:'น้ำหนักตัว; เริ่มแบบพิงสูงหรือเข่าพื้นได้',
+        form:['มือกว้างประมาณหัวไหล่','ลำตัวเป็นแนวเดียว','ลดอกเข้าหาพื้นโดยศอกไม่กาง 90°','ดันพื้นกลับขึ้นโดยไม่แอ่นหลัง']}
+    }
+  ]
+};
+
+function goalPlan(){
+  const plans={
+    lose:{sets:3,reps:'10–15',rest:'60–90 วินาที',volume:'เน้นความสม่ำเสมอและการใช้พลังงาน'},
+    maintain:{sets:2,reps:'8–12',rest:'60–120 วินาที',volume:'รักษาความแข็งแรงและมวลกล้ามเนื้อ'},
+    muscle:{sets:3,reps:'8–12',rest:'90–120 วินาที',volume:'เพิ่มปริมาณงานต่อกล้ามเนื้ออย่างค่อยเป็นค่อยไป'},
+    tone:{sets:3,reps:'10–15',rest:'60–90 วินาที',volume:'เน้นคุมท่าและสร้างความแข็งแรง'}
+  };
+  return plans[selectedGoal] || plans.maintain;
+}
+
+function experienceLabel(){
+  const x=document.getElementById('experience')?.value || 'beginner';
+  return x==='advanced'?'มีประสบการณ์สูง':x==='regular'?'ฝึกเป็นประจำ':'เริ่มต้น';
+}
+
+
+function renderGoalTips(){
+  const tips={
+    lose:[
+      ['🍗','โปรตีนทุกมื้อ','เลือกโปรตีนไม่ติดมันและผักเป็นหลัก เพื่อช่วยให้อิ่มและรักษามวลกล้ามเนื้อ'],
+      ['🥦','คุมพลังงานแบบพอดี','ลดพลังงานทีละน้อย ไม่จำเป็นต้องอดอาหาร'],
+      ['🚶','เพิ่มการเคลื่อนไหว','เดินและทำกิจกรรมระหว่างวันร่วมกับเวทเทรนนิ่ง']
+    ],
+    maintain:[
+      ['🥗','อาหารครบหมู่','มีโปรตีน ผัก คาร์โบไฮเดรต และไขมันดีอย่างสมดุล'],
+      ['⚖️','ติดตามแนวโน้ม','ดูน้ำหนักและรอบเอวเป็นแนวโน้ม ไม่ต้องตัดสินจากวันเดียว'],
+      ['💧','พักและดื่มน้ำ','การนอนและน้ำมีส่วนช่วยให้ฝึกได้สม่ำเสมอ']
+    ],
+    muscle:[
+      ['💪','โปรตีนเพียงพอ','กระจายโปรตีนหลายมื้อและกินอาหารครบหมู่'],
+      ['🍚','พลังงานเพียงพอ','เพิ่มพลังงานเล็กน้อยหากเป้าหมายคือเพิ่มกล้ามเนื้อ'],
+      ['🏋️','Progressive overload','เมื่อทำช่วงครั้งเป้าหมายได้ง่าย ค่อยเพิ่มน้ำหนักหรือจำนวนครั้ง']
+    ],
+    tone:[
+      ['🥩','โปรตีน + อาหารครบหมู่','เน้นคุณภาพอาหารและปริมาณที่เหมาะสม'],
+      ['✨','เวทเป็นแกนหลัก','ฝึกแรงต้านสม่ำเสมอและเพิ่มความยากอย่างค่อยเป็นค่อยไป'],
+      ['🚶','คาร์ดิโอเสริม','เดินเร็ว ปั่นจักรยาน หรือกิจกรรมที่ทำต่อเนื่องได้']
+    ]
+  };
+  const arr=tips[selectedGoal]||tips.maintain;
+  document.getElementById('goalTips').innerHTML=arr.map(t=>`<div class="guideCard"><div style="font-size:30px">${t[0]}</div><h3>${t[1]}</h3><p>${t[2]}</p></div>`).join('');
+}
+
+function renderPersonalPlan(){
+  if(!userData || !selectedGoal) return;
+  const selected=getSelectedMuscles();
+  const box=document.getElementById('comparisonGrid');
+  if(!selected.length){
+    box.innerHTML='<div class="emptyPlan">👆 เลือกกล้ามเนื้อที่ต้องการเน้นอย่างน้อย 1 ส่วน แล้วระบบจะแสดงการเปรียบเทียบ Gym กับ Home ให้ค่ะ</div>';
+    return;
+  }
+  const unique=[];
+  selected.forEach(m=>(exerciseDB[m]||[]).forEach(pair=>{
+    if(!unique.some(x=>x.gym.name===pair.gym.name && x.home.name===pair.home.name)) unique.push(pair);
+  }));
+  const plan=goalPlan();
+  document.getElementById('planSummary').textContent=
+    `เป้าหมาย: ${getGoalName()} • ประสบการณ์: ${experienceLabel()} • ${selected.map(m=>getMuscleName(m)).join(' + ')}`;
+
+  box.innerHTML=unique.map((pair,i)=>`
+    <div class="compareBlock">
+      <div class="compareHeader">
+        <div><h3>${pair.muscle}</h3><p>เปรียบเทียบท่าที่ทำงานกล้ามเนื้อใกล้เคียงกัน</p></div>
+        <span class="compareTag">${plan.sets} เซต × ${plan.reps} ครั้ง</span>
+      </div>
+      <div class="compareColumns">
+        ${renderExerciseOption(pair.gym,'🏢 Gym',plan,'gym')}
+        ${renderExerciseOption(pair.home,'🏠 Home',plan,'home')}
+      </div>
+      <div class="compareVerdict"><b>เลือกแบบไหนดี?</b> ทั้งสองแบบสามารถฝึกกล้ามเนื้อเป้าหมายได้
+        ความแตกต่างหลักคืออุปกรณ์และเส้นทางแรงต้าน หากอยู่บ้านให้เลือกแบบที่ทำได้สม่ำเสมอและเพิ่มความยากได้
+        ส่วนใน Gym เครื่องช่วยให้เพิ่มโหลดได้สะดวกและควบคุมทิศทางการเคลื่อนไหวได้มากขึ้นในบางท่า</div>
+    </div>`).join('');
+}
+
+function createWorkoutPlan(){
+  if(!userData || !selectedGoal){
+    document.getElementById('error').textContent='กรุณาคำนวณ BMI และเลือกเป้าหมายรูปร่างก่อนค่ะ';
+    return;
+  }
+  if(!getSelectedMuscles().length){
+    document.getElementById('muscleBox').scrollIntoView({behavior:'smooth',block:'center'});
+    document.getElementById('planSummary').textContent='กรุณาเลือกกล้ามเนื้อที่ต้องการเน้นอย่างน้อย 1 ส่วน';
+    return;
+  }
+  renderPersonalPlan();
+  showPage('guide');
+  setTimeout(()=>document.getElementById('comparisonGrid').scrollIntoView({behavior:'smooth',block:'start'}),180);
+}
+
+function renderExerciseImage(ex, side){
+  if(ex.image){
+    const images = Array.isArray(ex.image) ? ex.image : [ex.image];
+    const source = images.some(u => /^https?:\/\//i.test(u))
+      ? `<div class="imageCredit">ภาพอ้างอิง: Wikimedia Commons • Everkinetic / ผู้สร้างต้นฉบับตามไฟล์ • ตรวจสอบใบอนุญาตของแต่ละภาพ</div>`
+      : '';
+    const phaseLabel = images.length > 1
+      ? `<div class="phaseHint"><span>1</span> เริ่มต้น <span>→</span> <span>2</span> เคลื่อนไหว</div>`
+      : '';
+    return `<div class="exerciseVisual realExerciseVisual">
+      <div class="exerciseImagePair">
+        ${images.map((src,i)=>`<figure class="exerciseFrame">
+          <img class="exerciseImage" src="${src}" alt="${ex.name} — ขั้นตอน ${i+1}" loading="lazy" referrerpolicy="no-referrer">
+          ${images.length>1 ? `<figcaption>${i===0?'เริ่มต้น':'ปลายทางการเคลื่อนไหว'}</figcaption>` : ''}
+        </figure>`).join('')}
+      </div>
+      ${phaseLabel}${source}
+    </div>`;
+  }
+  return `<div class="formIllustration">${exerciseSVG(side,ex.name)}</div>`;
+}
+
+function exerciseSVG(side,name){
+  // Generic form illustrations for machine/home movements where the supplied reference collage has no matching image.
+  let body='';
+  if(name.toLowerCase().includes('row') || name.toLowerCase().includes('pulldown') || name.toLowerCase().includes('curl')){
+    body=`<circle cx="245" cy="48" r="16" fill="#35b96b"/><path ${svgStroke()} d="M232 62 L190 93 L138 112 M190 93 L215 126 M138 112 L110 150 M110 150 L86 181 M215 126 L228 181"/><path ${svgStroke()} d="M70 184 L238 184"/><path d="M138 112 L190 93 L232 62" stroke="#2196f3" stroke-width="7" fill="none"/>`;
+  }else if(name.toLowerCase().includes('press') || name.toLowerCase().includes('push-up')){
+    body=`<circle cx="242" cy="67" r="16" fill="#35b96b"/><path ${svgStroke()} d="M228 78 L184 104 L130 125 L72 151 M184 104 L207 146 M130 125 L116 164 M72 151 L57 181 M207 146 L221 181"/><path ${svgStroke()} d="M45 185 L228 185"/><path d="M74 151 L130 125 L184 104" stroke="#2196f3" stroke-width="7" fill="none"/>`;
+  }else if(name.toLowerCase().includes('squat') || name.toLowerCase().includes('leg press') || name.toLowerCase().includes('hip thrust')){
+    body=`<circle cx="160" cy="38" r="16" fill="#35b96b"/><path ${svgStroke()} d="M160 55 L160 105 M160 75 L126 90 M160 75 L194 90 M160 105 L124 143 L105 184 M124 143 L169 145 L203 184"/><path ${svgStroke()} d="M103 184 L88 184 M203 184 L218 184"/><path d="M126 143 Q160 162 194 143" stroke="#2196f3" stroke-width="7" fill="none"/>`;
+  }else if(name.toLowerCase().includes('plank') || name.toLowerCase().includes('crunch')){
+    body=`<circle cx="252" cy="90" r="16" fill="#35b96b"/><path ${svgStroke()} d="M238 103 L185 119 L128 134 L73 151 M185 119 L163 157 M128 134 L115 174 M73 151 L59 174 M163 157 L178 176 M115 174 L102 177"/><path ${svgStroke()} d="M45 180 L190 180"/><path d="M74 151 L128 134 L185 119 L238 103" stroke="#2196f3" stroke-width="7" fill="none"/>`;
+  }else{
+    body=`<circle cx="160" cy="38" r="16" fill="#35b96b"/><path ${svgStroke()} d="M160 55 L160 105 M160 72 L124 92 M160 72 L196 92 M160 105 L132 146 L108 184 M132 146 L188 146 L214 184"/><path ${svgStroke()} d="M108 184 L91 184 M214 184 L231 184"/>`;
+  }
+  return `<svg viewBox="0 0 320 220" role="img" aria-label="${name}">${body}<text x="160" y="210" text-anchor="middle" font-size="13" fill="#58716c">ภาพสาธิตทิศทางการเคลื่อนไหว • คุมท่า</text></svg>`;
+}
+
+function svgStroke(){return 'stroke="#183b36" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"'}
+
+function renderExerciseOption(ex,label,plan,side){
+  return `<div class="exerciseOption">
+    <div class="optionTitle"><h4>${label}</h4><span class="equipmentTag">${ex.equipment}</span></div>
+    <div class="exerciseImage">${renderExerciseImage(ex,side)}</div>
+    <h3>${ex.name}</h3>
+    <div class="metaGrid">
+      <div class="meta"><strong>เซต × ครั้ง</strong><span>${plan.sets} × ${plan.reps}</span></div>
+      <div class="meta"><strong>พัก</strong><span>${plan.rest}</span></div>
+      <div class="meta"><strong>น้ำหนัก</strong><span>${ex.weight}</span></div>
+      <div class="meta"><strong>ความหนัก</strong><span>เหลือแรง ~2–3 ครั้ง</span></div>
+    </div>
+    <ol class="formSteps">${ex.form.map(step=>`<li>${step}</li>`).join('')}</ol>
+  </div>`;
+}
+
+
+function searchExercises(query){
+  const box=document.getElementById('searchResults');
+  if(!box) return;
+  const q=(query||'').trim().toLowerCase();
+  if(!q){ box.innerHTML=''; return; }
+
+  const results=[];
+  const muscleKeys=Object.keys(exerciseDB);
+  muscleKeys.forEach(m=>{
+    (exerciseDB[m]||[]).forEach(pair=>{
+      [pair.gym,pair.home].forEach(ex=>{
+        const haystack=[
+          ex.name, ex.equipment, pair.muscle, getMuscleName(m)
+        ].join(' ').toLowerCase();
+        if(haystack.includes(q) && !results.some(r=>r.name===ex.name && r.muscle===pair.muscle)){
+          results.push({name:ex.name,muscle:pair.muscle,equipment:ex.equipment,m});
+        }
+      });
+    });
+  });
+
+  if(!results.length){
+    box.innerHTML='<div class="searchEmpty">ไม่พบข้อมูลที่ตรงกับคำค้นหา ลองค้นด้วยชื่อกล้ามเนื้อหรืออุปกรณ์</div>';
+    return;
+  }
+
+  box.innerHTML=results.slice(0,20).map(r=>`
+    <button type="button" class="searchResult"
+      onclick="useExerciseSearchResult('${r.muscle.replace(/'/g,"\\'")}')">
+      <strong>${r.name}</strong>
+      <span>🎯 ${r.muscle} • ${r.equipment}</span>
+    </button>`).join('');
+}
+
+function useExerciseSearchResult(muscle){
+  const target=[...document.querySelectorAll('.muscleBtn')].find(b=>{
+    const key=b.dataset.muscle;
+    return getMuscleName(key)===muscle;
+  });
+  if(target){
+    target.classList.add('selected');
+    renderPersonalPlan();
+    document.getElementById('comparisonGrid').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+}
+
+function getGoalName(){
+  return {lose:'ลดไขมัน / ลดน้ำหนัก',maintain:'รักษาน้ำหนัก / สุขภาพสมดุล',muscle:'เพิ่มกล้ามเนื้อ',tone:'กระชับ / ดูเฟิร์ม'}[selectedGoal] || '';
+}
+function getMuscleName(m){
+  return {chest:'อก',back:'หลัง',shoulders:'ไหล่',arms:'แขน',glutes:'ก้น',legs:'ขา',abs:'หน้าท้อง',full:'ทั้งตัว'}[m]||m;
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter' && document.activeElement.tagName==='INPUT') calculateBMI();
+});
+</script>
+</body>
+</html>
